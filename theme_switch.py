@@ -24,18 +24,19 @@ with open(config_file_path, "r") as f:
 
 themes = config["themes"]
 
-if len(sys.argv) > 1 and sys.argv[1] == "back":
+if len(sys.argv) > 1 and sys.argv[1] == "previous":
     current -= 1
-else:
+elif len(sys.argv) > 1 and sys.argv[1] == "next":
     current += 1
     
 if current >= len(themes):
     current = 0
 if current < 0:
     current = len(themes)-1
-next_theme = themes[current]
+theme = themes[current]
 
 with open(current_file_path,"w") as f:
     f.write(str(current))
 
-load_theme(next_theme)
+load_theme(theme)
+

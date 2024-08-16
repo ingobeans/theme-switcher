@@ -1,0 +1,5 @@
+venv/
+wallpapers/*
+!wallpapers/.gitkeep
+config.yaml
+current.txt

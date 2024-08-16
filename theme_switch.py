@@ -1,4 +1,4 @@
-import subprocess, os, sys, yaml
+import subprocess, os, sys, json
 
 def run_command(command):
     subprocess.Popen(command,shell=True)
@@ -14,13 +14,13 @@ def load_theme(theme):
 cwd = os.path.dirname(os.path.realpath(__file__))
 handler_file_path = os.path.join(cwd,"handler.sh")
 current_file_path = os.path.join(cwd,"current.txt")
-config_file_path = os.path.join(cwd,"config.yaml")
+config_file_path = os.path.join(cwd,"config.json")
 
 with open(current_file_path,"r") as f:
     current = int(f.read().strip())
 
 with open(config_file_path, "r") as f:
-    config = yaml.safe_load(f)
+    config = json.load(f)
 
 themes = config["themes"]
 

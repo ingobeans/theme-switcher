@@ -9,10 +9,10 @@ dir="$1"
 theme="$2"
 dark="$3"
 img="$4"
-#echo dir ${dir}
-#echo theme ${theme}
-#echo dark ${dark}
-#echo img ${img}
+echo dir ${dir}
+echo theme ${theme}
+echo dark ${dark}
+echo img ${img}
 
 cp ${dir}/base.css ~/.config/waybar/style.css
 cat ${dir}/styles/${theme}.css >> ~/.config/waybar/style.css

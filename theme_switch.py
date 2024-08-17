@@ -3,12 +3,12 @@ import subprocess, os, sys, json
 def run_command(command):
     subprocess.Popen(command,shell=True)
 
-def load_theme(theme, old_theme):
+def load_theme(theme, old_theme, force):
     css_theme = "skipvalue"
-    if old_theme.get("theme","skipvalue") != theme.get("theme","skipvalue"):
+    if old_theme.get("theme","skipvalue") != theme.get("theme","skipvalue") or force:
         css_theme = theme.get("theme",'""')
     gtk_theme = "skipvalue"
-    if old_theme.get("dark",True) != theme.get("dark",True):
+    if old_theme.get("dark",True) != theme.get("dark",True) or force:
         gtk_theme = theme.get("dark",True)
     run_command(f"{handler_file_path} {config_path} {css_theme} {gtk_theme} {theme['img']}")
 
@@ -81,4 +81,5 @@ theme = themes[current]
 with open(current_file_path,"w") as f:
     f.write(str(current))
 
-load_theme(theme,old_theme)
+force = theme == old_theme
+load_theme(theme,old_theme,force)

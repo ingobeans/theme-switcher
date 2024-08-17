@@ -4,6 +4,7 @@
 @define-color red-color #e92d4d;
 @define-color blue-color #407cdd;
 @define-color purple-color #ad6bfd;
+@define-color transparency-color rgba(0,0,0,0);
 
 * {
     border: none;
@@ -16,7 +17,7 @@
 }
 
 window#waybar {
-    background: rgba(21, 18, 27, 0);
+    background: @transparency-color;
     color: @text-color;
 }
 

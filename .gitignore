@@ -3,3 +3,6 @@ wallpapers/*
 !wallpapers/.gitkeep
 config.json
 current.txt
+styles/
+!styles/light.css
+!styles/dark.css

@@ -1,16 +1,26 @@
-import subprocess, os, sys, json
+import subprocess, os, sys, json, shutil
 
 def run_command(command):
     subprocess.Popen(command,shell=True)
 
 def load_theme(theme, old_theme, force):
-    css_theme = "skipvalue"
-    if old_theme.get("theme","skipvalue") != theme.get("theme","skipvalue") or force:
-        css_theme = theme.get("theme",'""')
-    gtk_theme = "skipvalue"
-    if old_theme.get("dark",True) != theme.get("dark",True) or force:
-        gtk_theme = theme.get("dark",True)
-    run_command(f"{handler_file_path} {config_path} {css_theme} {gtk_theme} {theme['img']}")
+    css_theme = theme.get("theme")
+    gtk_theme = theme.get("dark",True)
+    # update gtk theme
+    run_command(f"xfconf-query -c xsettings -p /Net/ThemeName -s \"{gtk_theme}\"")
+    run_command(f"gsettings set org.gnome.desktop.interface gtk-theme \"{gtk_theme}\"")
+    # update wallpaper
+    run_command(f"swww img {wallpaper_path}/{theme.get('img')} --transition-fps 60 --transition-type grow --transition-pos 1.0,1.0 --transition-duration 0.5")
+    # update waybar css
+    with open(base_style_path,"r") as base_style:
+        css = base_style.read()
+        if css_theme:
+            with open(f"{styles_path}/{css_theme}.css") as css_theme:
+                css += css_theme.read()
+
+
+        with open(os.path.expanduser("~/.config/waybar/style.css"),"w") as f:
+            f.write(css)
 
 cwd = os.path.dirname(os.path.realpath(__file__))
 handler_file_path = os.path.join(cwd,"handler.sh")

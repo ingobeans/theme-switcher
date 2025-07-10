@@ -5,12 +5,16 @@ def run_command(command):
 
 def load_theme(theme, old_theme, force):
     css_theme = theme.get("theme")
-    gtk_theme = theme.get("dark",True)
+    gtk_theme_dark = theme.get("dark",True)
+    if gtk_theme_dark:
+        gtk_theme = config["gtk_theme_dark"]
+    else:
+        gtk_theme = config["gtk_theme_light"]
     # update gtk theme
-    run_command(f"xfconf-query -c xsettings -p /Net/ThemeName -s \"{gtk_theme}\"")
-    run_command(f"gsettings set org.gnome.desktop.interface gtk-theme \"{gtk_theme}\"")
+    subprocess.Popen(["xfconf-query","-c","xsettings","-p","/Net/ThemeName","-s",gtk_theme])
+    subprocess.Popen(["gsettings","set","org.gnome.desktop.interface","gtk-theme",gtk_theme])
     # update wallpaper
-    run_command(f"swww img {wallpaper_path}/{theme.get('img')} --transition-fps 60 --transition-type grow --transition-pos 1.0,1.0 --transition-duration 0.5")
+    subprocess.Popen(["swww","img",f"{wallpaper_path}/{theme.get('img')}","--transition-fps","60","--transition-type","grow","--transition-pos","1.0,1.0","--transition-duration","0.5"])
     # update waybar css
     with open(base_style_path,"r") as base_style:
         css = base_style.read()

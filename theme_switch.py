@@ -1,8 +1,5 @@
 import subprocess, os, sys, json, shutil
 
-def run_command(command):
-    subprocess.Popen(command,shell=True)
-
 def load_theme(theme, old_theme, force):
     css_theme = theme.get("theme")
     gtk_theme_dark = theme.get("dark",True)

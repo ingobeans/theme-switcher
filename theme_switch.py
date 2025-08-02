@@ -1,6 +1,6 @@
 import subprocess, os, sys, json, shutil
 
-def load_theme(theme, old_theme, force):
+def load_profile(theme):
     gtk_theme_dark = theme.get("dark",True)
     if gtk_theme_dark:
         gtk_theme = config["gtk_theme_dark"]
@@ -22,7 +22,6 @@ def load_theme(theme, old_theme, force):
         f.write(css)
 
 cwd = os.path.dirname(os.path.realpath(__file__))
-handler_file_path = os.path.join(cwd,"handler.sh")
 
 config_path = os.path.expanduser("~/.config/theme_switcher")
 current_file_path = os.path.join(config_path,"current.txt")
@@ -66,23 +65,19 @@ with open(current_file_path,"r") as f:
 with open(config_file_path, "r") as f:
     config = json.load(f)
 
-themes = config["profiles"]
-
-old_theme = themes[current]
+profiles = config["profiles"]
 
 if len(sys.argv) > 1 and sys.argv[1] == "previous":
     current -= 1
 elif len(sys.argv) > 1 and sys.argv[1] == "next":
     current += 1
 
-if current >= len(themes):
+if current >= len(profiles):
     current = 0
 if current < 0:
-    current = len(themes)-1
-theme = themes[current]
+    current = len(profiles)-1
 
 with open(current_file_path,"w") as f:
     f.write(str(current))
 
-force = theme == old_theme
-load_theme(theme,old_theme,force)
+load_profile(profiles[current])

@@ -1,7 +1,6 @@
 import subprocess, os, sys, json, shutil
 
 def load_theme(theme, old_theme, force):
-    css_theme = theme.get("theme")
     gtk_theme_dark = theme.get("dark",True)
     if gtk_theme_dark:
         gtk_theme = config["gtk_theme_dark"]
@@ -13,15 +12,14 @@ def load_theme(theme, old_theme, force):
     # update wallpaper
     subprocess.Popen(["swww","img",f"{wallpaper_path}/{theme.get('img')}","--transition-fps","60","--transition-type","grow","--transition-pos","1.0,1.0","--transition-duration","0.5"])
     # update waybar css
-    with open(base_style_path,"r") as base_style:
-        css = base_style.read()
-        if css_theme:
-            with open(f"{styles_path}/{css_theme}.css") as css_theme:
-                css += css_theme.read()
+    css = ""
+    for css_theme in theme.get("themes"):
+        with open(f"{styles_path}/{css_theme}.css") as css_theme:
+            css += css_theme.read()
 
 
-        with open(os.path.expanduser("~/.config/waybar/style.css"),"w") as f:
-            f.write(css)
+    with open(os.path.expanduser("~/.config/waybar/style.css"),"w") as f:
+        f.write(css)
 
 cwd = os.path.dirname(os.path.realpath(__file__))
 handler_file_path = os.path.join(cwd,"handler.sh")
@@ -31,7 +29,6 @@ current_file_path = os.path.join(config_path,"current.txt")
 config_file_path = os.path.join(config_path,"config.json")
 wallpaper_path = os.path.join(config_path,"wallpapers")
 styles_path = os.path.join(config_path,"styles")
-base_style_path = os.path.join(config_path,"base.css")
 
 if not os.path.isdir(config_path):
     os.mkdir(config_path)
@@ -46,24 +43,19 @@ if not os.path.isdir(config_path):
             "gtk_theme_light":"Adwaita",    # gtk theme when "dark" is True
             "gtk_theme_dark":"Adwaita-dark",# gtk theme when "dark" is False
 
-            "themes":[
+            "profiles":[
                 {
                     "img":"light.png", # wallpaper
                     "dark":False # if to use dark gtk theme
                 },
                 {
-                    "img":"dark.png"
-                    # no need to specify dark, is default
-                    # you can however (and most likely want to) specify
-                    # a dark override theme
-                    # ex: "theme":"my_dark_override"
-                    # will append the contents of ~/.config/styles/my_dark_override.css to
-                    # base.css, allowing you to override the default theme
+                    "img":"dark.png",
+                    "themes": ["dark"]
                 },
                 {
                     "img":"bright yellow.png",
                     "dark":False, # use light gtk theme
-                    "theme":"yellow" # override default theme
+                    "themes": ["light","yellow"]
                 }
             ]
         },f,indent=4)
@@ -74,7 +66,7 @@ with open(current_file_path,"r") as f:
 with open(config_file_path, "r") as f:
     config = json.load(f)
 
-themes = config["themes"]
+themes = config["profiles"]
 
 old_theme = themes[current]
 
